@@ -1,22 +1,33 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Searchbar } from 'react-native-paper';
-import axios from 'axios';
-import { Button } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Pour le stockage asynchrone
+import React, { useEffect, useState } from 'react'; // Pour les hooks React
+import {
+    StyleSheet,
+    View,
+    Text,
+    FlatList,
+    RefreshControl,
+    ActivityIndicator,
+} from 'react-native'; // Composants natifs React Native
+import { Searchbar } from 'react-native-paper'; // Barre de recherche
+import axios from 'axios'; // Pour les appels API
+import { Button } from 'react-native-elements'; // Boutons stylisés
 
 const Clients = () => {
-    const [key, setKey] = useState('');
-    const [responseData, setResponseData] = useState([]);
-    const [num, setNum] = useState(100);
-    const [refreshing, setRefreshing] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [key, setKey] = useState(''); // Clé pour l'authentification
+    const [responseData, setResponseData] = useState([]); // Données des clients
+    const [num, setNum] = useState(100); // Nombre d'éléments affichés
+    const [refreshing, setRefreshing] = useState(false); // État de rafraîchissement
+    const [loading, setLoading] = useState(true); // État de chargement
+    const [searchQuery, setSearchQuery] = useState(''); // Requête de recherche
 
+    // Filtrage et limitation des données
     const filteredData = responseData
-        .filter(item => item.ClientP.toLowerCase().includes(searchQuery.toLowerCase()))
+        .filter((item) =>
+            item.ClientP.toLowerCase().includes(searchQuery.toLowerCase())
+        )
         .slice(0, num);
 
+    // Rafraîchir les données
     const onRefresh = async () => {
         setRefreshing(true);
         try {
@@ -26,12 +37,16 @@ const Clients = () => {
         }
     };
 
+    // Appel API pour récupérer les clients
     const handleapiSpecial = async () => {
         setLoading(true);
         try {
-            const response = await axios.post('https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/clients.php', {
-                key: key
-            });
+            const response = await axios.post(
+                'https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/clients.php',
+                {
+                    key: key,
+                }
+            );
             setResponseData(response.data);
         } catch (error) {
             console.error('Failed to fetch data:', error);
@@ -40,10 +55,12 @@ const Clients = () => {
         }
     };
 
+    // Charger les données lorsque la clé change
     useEffect(() => {
         handleapiSpecial();
     }, [key]);
 
+    // Récupérer la clé de l'appareil
     useEffect(() => {
         const checkItem = async () => {
             try {
@@ -56,10 +73,16 @@ const Clients = () => {
         checkItem();
     }, []);
 
+    // Rendu de chaque élément de la liste
     const renderItem = ({ item }) => (
         <View style={styles.card}>
             <Text style={styles.clientName}>{item.ClientP}</Text>
-            <Text style={styles.credit}>Crédit: <Text style={styles.amount}>{parseInt(item.SoldeP).toFixed(2).replace('.', ',')} DA</Text></Text>
+            <Text style={styles.credit}>
+                Crédit:{' '}
+                <Text style={styles.amount}>
+                    {parseInt(item.SoldeP).toFixed(2).replace('.', ',')} DA
+                </Text>
+            </Text>
             <Text style={styles.info}>Téléphone: {item.TelP}</Text>
         </View>
     );
@@ -69,7 +92,7 @@ const Clients = () => {
             <Searchbar
                 placeholder="Recherche Client"
                 value={searchQuery}
-                onChangeText={query => setSearchQuery(query)}
+                onChangeText={(query) => setSearchQuery(query)}
                 style={styles.searchInput}
                 iconColor="#007BFF"
             />
@@ -77,7 +100,9 @@ const Clients = () => {
                 data={filteredData}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.ClientP.toString()}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
                 ListFooterComponent={
                     <View style={styles.loadMoreContainer}>
                         <Button
@@ -89,7 +114,9 @@ const Clients = () => {
                     </View>
                 }
                 ListEmptyComponent={
-                    !loading && <Text style={styles.emptyText}>Aucun client disponible</Text>
+                    !loading && (
+                        <Text style={styles.emptyText}>Aucun client trouvé</Text>
+                    )
                 }
             />
             {loading && (
@@ -117,7 +144,7 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#FFFFFF',
         padding: 16,
-        marginBottom: 16,
+        marginBottom: 10,
         borderRadius: 12,
         shadowColor: '#00000020',
         shadowOffset: { width: 0, height: 3 },
@@ -126,12 +153,12 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     clientName: {
-        fontSize: 20,
+        fontSize: 15,
         fontWeight: '600',
         color: '#333',
     },
     credit: {
-        fontSize: 16,
+        fontSize: 13,
         color: '#666',
         marginVertical: 4,
     },
@@ -140,7 +167,7 @@ const styles = StyleSheet.create({
         color: '#007BFF',
     },
     info: {
-        fontSize: 14,
+        fontSize: 12,
         color: '#888',
     },
     loaderContainer: {

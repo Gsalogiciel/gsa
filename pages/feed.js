@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Text,
+    ScrollView,
+    TouchableOpacity,
+    TextInput,
+    Alert,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from "react-native-vector-icons/Ionicons";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Feedback = () => {
     const [feedback, setFeedback] = useState('');
@@ -9,9 +17,12 @@ const Feedback = () => {
 
     const handleSubmit = () => {
         if (feedback.trim()) {
-            // Here you would usually send the feedback to your server or handle it as needed
-            Alert.alert("Merci pour votre retour !", "Nous avons bien reçu votre commentaire.");
-            setFeedback(''); // Clear the input after submission
+            // Ici, vous pourriez envoyer le feedback à un serveur ou gérer les données comme nécessaire.
+            Alert.alert(
+                "Merci pour votre retour !",
+                "Nous avons bien reçu votre commentaire."
+            );
+            setFeedback(''); // Réinitialise le champ de texte après soumission.
         } else {
             Alert.alert("Erreur", "Veuillez entrer un commentaire avant de soumettre.");
         }
@@ -23,7 +34,9 @@ const Feedback = () => {
                 <Text style={styles.title}>Retour d'Information</Text>
                 <Text style={styles.subtitle}>Nous apprécions vos retours !</Text>
                 <Text style={styles.paragraph}>
-                    Utilisez le champ ci-dessous pour nous faire part de vos commentaires, suggestions ou préoccupations. Votre avis est important pour nous aider à améliorer notre application.
+                    Utilisez le champ ci-dessous pour nous faire part de vos commentaires,
+                    suggestions ou préoccupations. Votre avis est important pour nous
+                    aider à améliorer notre application.
                 </Text>
                 <TextInput
                     style={styles.textInput}
@@ -33,11 +46,17 @@ const Feedback = () => {
                     value={feedback}
                     onChangeText={setFeedback}
                 />
-                <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                <TouchableOpacity
+                    style={styles.submitButton}
+                    onPress={handleSubmit}
+                >
                     <Text style={styles.submitButtonText}>Envoyer</Text>
                 </TouchableOpacity>
             </ScrollView>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+            >
                 <Icon name="arrow-back-outline" size={24} color="#FFFFFF" />
                 <Text style={styles.backButtonText}>Retour</Text>
             </TouchableOpacity>

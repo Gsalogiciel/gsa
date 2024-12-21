@@ -221,11 +221,13 @@ const Valide = ({ route }) => {
                             title="Tva"
                             checked={check2}
                             onPress={() => setCheck2(!check2)}
+                            containerStyle={{margin:0,marginLeft:0,marginRight:0,padding:0,paddingBottom:0,height:30}}
                         />
                         <CheckBox
                             title="Timbre"
                             checked={check1}
                             onPress={() => setCheck1(!check1)}
+                            containerStyle={{margin:0,marginLeft:0,marginRight:0,padding:0,paddingBottom:0,height:30}}
                         />
                         <CheckBox
                             title="Payée"
@@ -238,12 +240,15 @@ const Valide = ({ route }) => {
                                 }
 
                             }}
+                            containerStyle={{margin:0,marginLeft:0,marginRight:0,padding:0,paddingBottom:0,height:30}}
                         />
                     </View>
                     <View style={{
                         display: "flex",
                         flexDirection: "row",
+                        flexWrap:"wrap",
                         justifyContent: "flex-start",
+                        padding:0
                     }}>
 
                         <CheckBox
@@ -257,6 +262,8 @@ const Valide = ({ route }) => {
                                 }
 
                             }}
+                            containerStyle={{margin:0,marginLeft:0,marginRight:0,padding:0,paddingBottom:0,height:30}}
+                            
                         />
                         <CheckBox
                             title="Versement"
@@ -269,6 +276,7 @@ const Valide = ({ route }) => {
                                 }
 
                             }}
+                            containerStyle={{margin:0,marginLeft:0,marginRight:0,padding:0,paddingBottom:0,height:30}}
                         />
                     </View>
                     {check5 ? (
@@ -330,6 +338,7 @@ const Valide = ({ route }) => {
                     </View>
                 </View>
             </Modal>
+            
         </View>
     );
 };
@@ -352,14 +361,14 @@ const styles = StyleSheet.create({
     touchableInput: {
         backgroundColor: '#f1f1f1',
         borderRadius: 8,
-        padding: 16,
+        padding: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 16,
     },
     touchableText: {
-        fontSize: 16,
+        fontSize: 14,
         color: 'black',
     },
     addItemContainer: {
@@ -367,11 +376,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#f1f1f1',
         borderRadius: 8,
-        padding: 16,
+        padding: 10,
         marginBottom: 16,
     },
     optionText: {
-        fontSize: 16,
+        fontSize: 14,
         color: 'black',
         marginLeft: 8,
     },
@@ -392,22 +401,25 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     productName: {
-        fontSize: 16,
+        fontSize: 13,
         fontWeight: 'bold',
     },
     productRef: {
         color: '#555',
+        fontSize:12,
+        marginTop:5,
+        marginBottom:5
     },
     productMeta: {
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     productQuantity: {
-        fontSize: 14,
+        fontSize: 12,
         color: '#555',
     },
     productPrice: {
-        fontSize: 14,
+        fontSize: 12,
         color: 'black',
     },
     deleteButton: {
@@ -416,7 +428,8 @@ const styles = StyleSheet.create({
     },
     footer: {
         padding: 16,
-        backgroundColor: 'white',
+        backgroundColor: 'white'
+        
     },
     summaryContainer: {
         marginBottom: 16,
@@ -438,36 +451,35 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
     },
     summaryLabel: {
-        fontSize: 16,
+        fontSize: 14,
         color: '#555',
     },
     summaryValue: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         color: 'black',
     },
-    buttonContainer: {
-        marginTop: 16,
-    },
     submitButton: {
         backgroundColor: 'black',
-        borderRadius: 8,
+        borderRadius: 5,
         paddingVertical: 12,
         alignItems: 'center',
-        marginBottom: 10
+        marginBottom: 10,
+       
     },
     submitButtonText: {
-        fontSize: 18,
+        fontSize: 15,
         color: '#fff',
     },
     submitButton2: {
         backgroundColor: 'red',
-        borderRadius: 8,
+        borderRadius: 5,
         paddingVertical: 12,
         alignItems: 'center',
+       
     },
     submitButtonText2: {
-        fontSize: 18,
+        fontSize: 15,
         color: '#fff',
     },
     modalOverlay: {
@@ -483,7 +495,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     successMessage: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 16,
     },
@@ -495,7 +507,7 @@ const styles = StyleSheet.create({
     },
     modalButtonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 14,
     },
 });
 

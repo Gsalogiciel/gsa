@@ -1,11 +1,12 @@
+import React, { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, View, Text, FlatList, RefreshControl, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Input, Button } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import Icon from "react-native-vector-icons/Ionicons";
-import { useEffect, useState, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
+import { TextInput } from 'react-native-paper';
 
 const Orders = () => {
     const navigation = useNavigation();
@@ -17,12 +18,14 @@ const Orders = () => {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
+    // Refresh handler
     const onRefresh = async () => {
         setRefreshing(true);
         await handleApiSpecial();
         setRefreshing(false);
     };
 
+    // Fetch orders from API
     const handleApiSpecial = async () => {
         setLoading(true);
         try {
@@ -48,10 +51,10 @@ const Orders = () => {
     useEffect(() => {
         const checkItem = async () => {
             try {
-                const username2 = await AsyncStorage.getItem('username');
-                const value5 = await AsyncStorage.getItem('mac');
-                setKey(value5);
-                setUser(username2);
+                const username = await AsyncStorage.getItem('username');
+                const mac = await AsyncStorage.getItem('mac');
+                setKey(mac);
+                setUser(username);
             } catch (error) {
                 console.error('Failed to get item:', error);
             }
@@ -59,7 +62,8 @@ const Orders = () => {
         checkItem();
     }, []);
 
-    const deleteCommande54 = async (id) => {
+    // Delete an order
+    const deleteCommande = async (id) => {
         try {
             await axios.post(
                 'https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/delete_commande.php',
@@ -71,6 +75,7 @@ const Orders = () => {
         }
     };
 
+    // Filter data based on search query
     const filterData = useCallback(() => {
         let filtered = responseData;
         if (searchQuery) {
@@ -86,59 +91,46 @@ const Orders = () => {
         filterData();
     }, [searchQuery, filterData]);
 
-    const debouncedFilterData = useCallback(
-        _.debounce(() => filterData(), 300),
-        [filterData]
-    );
-
-    useEffect(() => {
-        debouncedFilterData();
-    }, [searchQuery, debouncedFilterData]);
-
     const renderItem = ({ item }) => (
-
-        <TouchableOpacity style={styles.itemContainer} onPress={() => navigation.navigate("Bon", { id: item.id_com })}>
+        <TouchableOpacity
+            style={styles.itemContainer}
+            onPress={() =>
+                navigation.navigate("Bon", {
+                    id: item.id_com,
+                    client: item.nameD,
+                    versement: item.versementD,
+                    pay: item.payD,
+                    nopay: item.nopayD,
+                })
+            }
+        >
             <View style={styles.itemDetails}>
                 <Text style={styles.itemTitle}>{item.nameD}</Text>
                 <Text style={styles.itemId}>ID: {item.id_com}</Text>
-                {item.payD == false && item.nopayD == true ? (
-                    <Text style={styles.itemPhone}>Status: No payée</Text>
-
-                ) : (
-
-                    item.payD == false && item.nopayD == false ? (
-                        <Text style={styles.itemPhone}>Versement: {item.versementD} DA</Text>
-
-                    ) : (
-
-                        item.payD == true && item.nopayD == false ? (
-                            <Text style={styles.itemPhone2}>Status: Payée</Text>
-
-                        ) : (
-                            ""
-                        )
-                    )
-
-
-                )}
+                {item.payD === false && item.nopayD === true ? (
+                    <Text style={styles.itemPhone}>Status: Non Payée</Text>
+                ) : item.payD === false && item.nopayD === false ? (
+                    <Text style={styles.itemPhone}>Versement: {item.versementD} DA</Text>
+                ) : item.payD === true && item.nopayD === false ? (
+                    <Text style={styles.itemPhone2}>Status: Payée</Text>
+                ) : null}
             </View>
             <View style={styles.itemDateContainer}>
                 <Text style={styles.itemDate}>Date: {item.date}</Text>
+                <Button
+                    icon={<Icon name="trash-outline" size={15} color="white" />}
+                    buttonStyle={styles.deleteButton}
+                    onPress={() => deleteCommande(item.id_com)}
+                />
             </View>
-            <Button
-                icon={<Icon name="trash-outline" size={20} color="white" />}
-                buttonStyle={styles.deleteButton}
-                onPress={() => deleteCommande54(item.id_com)}
-            />
         </TouchableOpacity>
     );
 
     return (
         <View style={styles.container}>
-            <Input
-                placeholder='Recherche Commande'
-                leftIcon={<Icon name='search-outline' size={20} color='gray' />}
-                inputStyle={styles.searchInput}
+            <TextInput
+                placeholder="Recherche Commande"
+                style={styles.searchInput}
                 onChangeText={text => setSearchQuery(text)}
                 value={searchQuery}
             />
@@ -146,7 +138,9 @@ const Orders = () => {
                 data={filteredData}
                 keyExtractor={(item) => item.id_com.toString()}
                 renderItem={renderItem}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
                 ListFooterComponent={
                     loading && (
                         <View style={styles.loaderContainer}>
@@ -156,7 +150,7 @@ const Orders = () => {
                 }
                 contentContainerStyle={styles.flatListContent}
                 ListEmptyComponent={
-                    !loading && <Text style={styles.emptyText}>Aucune Facture Trouvée.</Text>
+                    !loading && <Text style={styles.emptyText}>Aucune commande trouvée.</Text>
                 }
             />
         </View>
@@ -172,17 +166,17 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         fontSize: 16,
-        paddingVertical: 8,
-        paddingLeft: 10,
-        color: '#333',
+        padding: 10,
+        backgroundColor: '#FFF',
+        borderRadius: 8,
         marginBottom: 10,
+        borderColor: '#E0E0E0',
+        borderWidth: 1,
     },
     itemContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
         backgroundColor: '#FFFFFF',
         borderRadius: 10,
-        padding: 16,
+        padding: 15,
         marginVertical: 8,
         borderWidth: 1,
         borderColor: '#E0E0E0',
@@ -191,38 +185,35 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3,
-        gap: 10,
     },
     itemDetails: {
         flex: 1,
-        marginRight: 8,
     },
     itemTitle: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '700',
         color: '#111827',
     },
     itemId: {
         color: '#6B7280',
-        fontSize: 13,
+        fontSize: 12,
         marginVertical: 2,
     },
     itemPhone: {
         color: '#EF4444',
-        fontSize: 13,
+        fontSize: 12,
         marginVertical: 2,
     },
     itemPhone2: {
         color: 'green',
-        fontSize: 13,
+        fontSize: 12,
         marginVertical: 2,
-    }
-    ,
+    },
     itemDateContainer: {
         alignItems: 'flex-end',
     },
     itemDate: {
-        fontSize: 13,
+        fontSize: 12,
         color: '#9CA3AF',
     },
     deleteButton: {
@@ -230,7 +221,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingVertical: 8,
         paddingHorizontal: 12,
-        marginLeft: 5,
     },
     loaderContainer: {
         justifyContent: 'center',

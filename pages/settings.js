@@ -8,9 +8,11 @@ const Settings = () => {
     const navigation = useNavigation();
 
     const handleLogout = async () => {
+        // Supprime les données de l'utilisateur
         await AsyncStorage.removeItem('username');
         await AsyncStorage.removeItem('mac');
         await AsyncStorage.removeItem('client');
+        // Redirige vers l'écran de connexion
         navigation.navigate("Login", {
             user: "nabil"
         });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, Image, ActivityIndicator, Alert } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
@@ -9,10 +9,11 @@ const Login = ({ route }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [response, setResponse] = useState('');
-    const [loading, setLoading] = useState(false); // New state for loading
+    const [loading, setLoading] = useState(false); // Loading state
     const navigation = useNavigation();
     const { user } = route.params || {};
 
+    // Effect for initial checks
     useEffect(() => {
         const checkUser = async () => {
             if (user === 'nabil') {
@@ -23,18 +24,24 @@ const Login = ({ route }) => {
 
         const checkStatus = async () => {
             const storedUsername = await AsyncStorage.getItem('username');
-            if (storedUsername !== null) {
+            if (storedUsername) {
                 navigation.navigate('Tabs', {
                     screen: 'Accueil',
-                    params: { storedUsername }
+                    params: { storedUsername },
                 });
             }
         };
         checkStatus();
     }, [user]);
 
+    // Login handler
     const handleLogin = async () => {
-        setLoading(true); // Start loading indicator
+        if (!username || !password) {
+            Alert.alert('Erreur', 'Veuillez remplir tous les champs.');
+            return;
+        }
+
+        setLoading(true); // Start loading
         try {
             const response = await axios.post(
                 'https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/log.php',
@@ -50,15 +57,16 @@ const Login = ({ route }) => {
                 
                 navigation.navigate('Tabs', {
                     screen: 'Accueil',
-                    params: { storedUsername, storedMac }
+                    params: { storedUsername, storedMac },
                 });
             } else {
-                setResponse(response.data);
+                setResponse('Nom d\'utilisateur ou mot de passe incorrect.');
             }
         } catch (error) {
-            console.error('There was an error!', error);
+            console.error('Erreur de connexion:', error);
+            Alert.alert('Erreur', 'Une erreur est survenue. Veuillez réessayer.');
         } finally {
-            setLoading(false); // Stop loading indicator
+            setLoading(false); // Stop loading
         }
     };
 
@@ -77,6 +85,7 @@ const Login = ({ route }) => {
                     inputStyle={styles.input}
                     onChangeText={setUsername}
                     value={username}
+                    autoCapitalize="none"
                 />
                 <Input
                     placeholder="Mot de passe"
@@ -86,16 +95,17 @@ const Login = ({ route }) => {
                     secureTextEntry
                     onChangeText={setPassword}
                     value={password}
+                    autoCapitalize="none"
                 />
                 <Button
                     onPress={handleLogin}
                     title="Connexion"
                     buttonStyle={styles.button}
-                    disabled={loading} // Disable button while loading
+                    disabled={loading}
                 />
-                {loading ? (
+                {loading && (
                     <ActivityIndicator size="large" color="#007BFF" style={styles.loadingIndicator} />
-                ) : null}
+                )}
                 {response ? <Text style={styles.responseText}>{response}</Text> : null}
             </View>
         </View>

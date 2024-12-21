@@ -22,7 +22,6 @@ import Security from './pages/security';
 import Feedback from './pages/feed';
 import Stock2 from './pages/stockSelect';
 
-
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -30,10 +29,8 @@ function MyTabs() {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 
-  const randnum = Math.random(86428648282);
-
-  
-
+  // Correction de Math.random pour générer un numéro aléatoire valide
+  const randnum = Math.floor(Math.random() * 100000000);
 
   return (
     <Tab.Navigator
@@ -97,15 +94,17 @@ function MyTabs() {
           tabBarIcon: () => (
             <TouchableOpacity
               style={styles.plusButton}
-              onPress={() => navigation.navigate("Ajouter une Facture", {
-                valclient: 'Sélectionner un client',
-                randnum: randnum
-              })}
+              onPress={() =>
+                navigation.navigate('Ajouter une Facture', {
+                  valclient: 'Sélectionner un client',
+                  randnum: randnum,
+                })
+              }
             >
               <Icon name="plus" size={30} color="white" />
             </TouchableOpacity>
           ),
-          tabBarLabel: () => null
+          tabBarLabel: () => null,
         }}
       />
       <Tab.Screen
@@ -133,7 +132,11 @@ export default function App() {
           'Veuillez vérifier votre connexion Internet et réessayer.',
           [{ text: 'OK' }]
         );
-      } else if (state.effectiveType === '2g' || state.effectiveType === 'slow-2g' || state.effectiveType === '3g') {
+      } else if (
+        state.effectiveType === '2g' ||
+        state.effectiveType === 'slow-2g' ||
+        state.effectiveType === '3g'
+      ) {
         Alert.alert(
           'Connexion Internet lente',
           'Votre connexion Internet est lente. Certaines fonctionnalités peuvent ne pas fonctionner comme prévu.',
@@ -157,7 +160,7 @@ export default function App() {
   useEffect(() => {
     const loadApp = async () => {
       // Simulate app loading
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       setIsLoading(false);
     };
 
@@ -177,8 +180,16 @@ export default function App() {
           headerTintColor: '#0163d2',
         }}
       >
-        <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-        <Stack.Screen options={{ headerShown: false }} name="Tabs" component={MyTabs} />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Login"
+          component={Login}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Tabs"
+          component={MyTabs}
+        />
         <Stack.Screen name="Ajouter au Liste" component={AddProduct} />
         <Stack.Screen name="Panier" component={Panier} />
         <Stack.Screen name="Ajouter une Facture" component={Valide} />
@@ -189,7 +200,6 @@ export default function App() {
         <Stack.Screen name="Sécurité" component={Security} />
         <Stack.Screen name="Feedback" component={Feedback} />
         <Stack.Screen name="Ajouter un produit" component={Stock2} />
-
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -197,110 +207,13 @@ export default function App() {
 
 const styles = StyleSheet.create({
   plusButton: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
     backgroundColor: '#0163d2',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
     bottom: 10,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Semi-transparent background
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    width: '90%',
-    borderRadius: 10,
-    backgroundColor: 'white',
-    // Rounded corners
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5, // Android shadow
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 15,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  touchClient: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    padding: 15,
-    backgroundColor: '#f7f7f7',
-    marginTop: 15,
-  },
-  clientInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  clientText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  clientChoice: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  choiceText: {
-    fontSize: 14,
-    color: 'gray',
-  },
-  chooseProductButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#0163d2',
-    borderRadius: 10,
-    paddingVertical: 12,
-    marginTop: 20,
-  },
-  chooseProductButtonText: {
-    color: 'white',
-    fontSize: 15,
-    marginLeft: 8,
-  },
-  textInput: {
-    marginTop: 20,
-    backgroundColor: 'white',
-  },
-  inputRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  inputHalf: {
-    width: '48%',
-    backgroundColor: 'white',
-  },
-  submitButton: {
-    marginTop: 25,
-    backgroundColor: '#0163d2',
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  submitButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });

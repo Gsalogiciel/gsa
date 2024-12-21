@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ActivityIndicator, TouchableOpacity, TextInput } from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Text,
+    ActivityIndicator,
+    TouchableOpacity,
+    TextInput,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import HorizontalScrollImages from './slidimg';
 
 const AddProduct = ({ route }) => {
-    const { des, ref, prixG, qty0, section, mac, user } = route.params;
+    const { des, ref, prixG, qty0, section, mac, user, idstock, marque } = route.params;
     const navigation = useNavigation();
     const [quantity, setQuantity] = useState(0);
     const [price, setPrice] = useState(prixG);
@@ -15,7 +23,7 @@ const AddProduct = ({ route }) => {
     const [successMessage, setSuccessMessage] = useState('');
 
     const handleQuantityChange = (action) => {
-        setQuantity(prevQuantity => {
+        setQuantity((prevQuantity) => {
             if (action === 'increase') {
                 return prevQuantity + 1;
             } else if (action === 'decrease') {
@@ -27,37 +35,42 @@ const AddProduct = ({ route }) => {
 
     const addToCart = async () => {
         if (quantity <= 0 || price <= 0) {
-            setErrorMessage("Veuillez entrer une quantité et un prix valides.");
+            setErrorMessage('Veuillez entrer une quantité et un prix valides.');
             return;
         }
 
         setLoading(true);
 
         try {
-            const endpoint = quantity === qty0 
-                ? 'https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/add2.php'
-                : 'https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/add.php';
+            const endpoint =
+                quantity === qty0
+                    ? 'https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/add2.php'
+                    : 'https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/add.php';
 
-            await axios.post(endpoint, JSON.stringify({
-                quantity,
-                price,
-                des,
-                ref,
-                section,
-                mac,
-                user,
-            }));
-            const client = await AsyncStorage.getItem("client");
-            const randnum = Math.random(86428648282);
-            
-            navigation.navigate("Ajouter une Facture", {
+            await axios.post(
+                endpoint,
+                JSON.stringify({
+                    quantity,
+                    price,
+                    des,
+                    ref,
+                    section,
+                    mac,
+                    user,
+                    marque,
+                })
+            );
+            const client = await AsyncStorage.getItem('client');
+            const randnum = Math.floor(Math.random() * 100000000);
+
+            navigation.navigate('Ajouter une Facture', {
                 valclient: client,
-                randnum:randnum
+                randnum: randnum,
             });
             setErrorMessage('');
         } catch (error) {
             console.error('There was an error!', error);
-            setErrorMessage("Une erreur est survenue. Veuillez réessayer.");
+            setErrorMessage('Une erreur est survenue. Veuillez réessayer.');
             setSuccessMessage('');
         } finally {
             setLoading(false);
@@ -84,7 +97,10 @@ const AddProduct = ({ route }) => {
             <View style={styles.inputGroup}>
                 <Text style={styles.label}>Quantité</Text>
                 <View style={styles.quantityContainer}>
-                    <TouchableOpacity onPress={() => handleQuantityChange('decrease')} style={styles.adjustButton}>
+                    <TouchableOpacity
+                        onPress={() => handleQuantityChange('decrease')}
+                        style={styles.adjustButton}
+                    >
                         <Text style={styles.adjustButtonText}>-</Text>
                     </TouchableOpacity>
                     <TextInput
@@ -93,7 +109,10 @@ const AddProduct = ({ route }) => {
                         style={styles.quantityInput}
                         onChangeText={(text) => setQuantity(Number(text) || 0)}
                     />
-                    <TouchableOpacity onPress={() => handleQuantityChange('increase')} style={styles.adjustButton}>
+                    <TouchableOpacity
+                        onPress={() => handleQuantityChange('increase')}
+                        style={styles.adjustButton}
+                    >
                         <Text style={styles.adjustButtonText}>+</Text>
                     </TouchableOpacity>
                 </View>
@@ -117,9 +136,14 @@ const AddProduct = ({ route }) => {
                 {loading ? (
                     <ActivityIndicator size="small" color="#FFF" />
                 ) : (
-                    <Text style={styles.buttonText}>Valider</Text>
+                    <Text style={styles.buttonText}>Ajouter</Text>
                 )}
             </TouchableOpacity>
+
+            <View style={{ marginTop: 10 }}>
+                <Text style={{ fontSize: 16 }}>Les images de ce produit :</Text>
+                <HorizontalScrollImages id={idstock} />
+            </View>
         </View>
     );
 };
@@ -131,8 +155,8 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     messageContainer: {
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: 'row',
+        alignItems: 'center',
         padding: 12,
         borderRadius: 8,
         marginBottom: 20,
@@ -155,18 +179,18 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     productTitle: {
-        fontSize: 30,
+        fontSize: 17,
         fontWeight: '700',
         color: '#333',
         marginBottom: 8,
     },
     productRef: {
-        fontSize: 18,
+        fontSize: 14,
         color: '#777',
-        marginBottom: 24,
+        marginBottom: 15,
     },
     inputGroup: {
-        marginBottom: 20,
+        marginBottom: 5,
     },
     label: {
         fontSize: 16,
@@ -199,12 +223,13 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ddd',
+        flexGrow: 1,
     },
     adjustButton: {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: '#6200ea',
+        backgroundColor: '#0163d2',
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 5,
@@ -214,11 +239,12 @@ const styles = StyleSheet.create({
         color: '#ffffff',
     },
     button: {
-        backgroundColor: '#6200ea',
+        backgroundColor: '#0163d2',
         borderRadius: 8,
         height: 50,
         justifyContent: 'center',
-        marginTop: 20,
+        marginBottom: 10,
+        marginTop: 15,
         shadowColor: '#000',
         shadowOpacity: 0.1,
         shadowOffset: { width: 0, height: 2 },
@@ -227,7 +253,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#ffffff',
         fontSize: 18,
-        textAlign: "center",
+        textAlign: 'center',
     },
 });
 

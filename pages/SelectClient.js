@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { Searchbar } from 'react-native-paper';
@@ -13,12 +13,13 @@ const Clients2 = () => {
     const [num, setNum] = useState(100);
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const randnum = Math.random(86428648282);
+    const randnum = Math.random().toString(36).substring(7); // Génère un numéro aléatoire unique
+
+    const navigation = useNavigation();
+
     const filteredData = responseData
         .filter(item => item.ClientP.toLowerCase().includes(searchQuery.toLowerCase()))
         .slice(0, num);
-
-    const navigation = useNavigation();
 
     const handleapiSpecial = async () => {
         setLoading(true);
@@ -89,7 +90,7 @@ const Clients2 = () => {
             />
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {

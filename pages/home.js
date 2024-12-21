@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Image, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from "react-native-vector-icons/Ionicons";
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,22 +9,24 @@ import axios from 'axios';
 
 const Home = ({ route }) => {
     const navigation = useNavigation();
-    const { storedUsername } = route.params;
+    const { storedUsername } = route.params; // Récupération du nom d'utilisateur passé en paramètre
     const [key, setKey] = useState('');
-    const [responseData, setResponseData] = useState([]);
+    const [responseData, setResponseData] = useState([]); // Données des produits
     const limitedData = responseData.slice(0, 1);
-    const [responseData2, setResponseData2] = useState([]);
+    const [responseData2, setResponseData2] = useState([]); // Données des clients
     const limitedData2 = responseData2.slice(0, 1);
-    const [responseData3, setResponseData3] = useState([]);
+    const [responseData3, setResponseData3] = useState([]); // Données des factures
     const limitedData3 = responseData3.slice(0, 1);
 
     useEffect(() => {
+        // Redirection vers la page Login si le nom d'utilisateur n'est pas défini
         if (!storedUsername) {
-            navigation.navigate("Login");
+            navigation.navigate('Login');
         }
     }, [storedUsername]);
 
     useEffect(() => {
+        // Chargement des clés nécessaires pour les appels API
         const checkItem = async () => {
             try {
                 const username2 = await AsyncStorage.getItem('username');
@@ -37,6 +39,7 @@ const Home = ({ route }) => {
         checkItem();
     }, []);
 
+    // Appel API pour les produits
     const handleapiSpecial = async () => {
         const response = await axios.post(
             'https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/totstock.php',
@@ -45,6 +48,7 @@ const Home = ({ route }) => {
         setResponseData(response.data);
     };
 
+    // Appel API pour les clients
     const handleapiSpecial2 = async () => {
         const response2 = await axios.post(
             'https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/totstock2.php',
@@ -53,6 +57,7 @@ const Home = ({ route }) => {
         setResponseData2(response2.data);
     };
 
+    // Appel API pour les factures
     const handleapiSpecial3 = async () => {
         const response3 = await axios.post(
             'https://gsaaouabdia.com/GSAsoftware/Admin_Gsa/page_administration/apis/totstock3.php',
@@ -61,6 +66,7 @@ const Home = ({ route }) => {
         setResponseData3(response3.data);
     };
 
+    // Appels API périodiques toutes les 90 secondes
     useEffect(() => {
         const interval = setInterval(() => {
             handleapiSpecial();
@@ -68,18 +74,12 @@ const Home = ({ route }) => {
             handleapiSpecial3();
         }, 90000);
 
-        return () => clearInterval(interval);
+        return () => clearInterval(interval); // Nettoyage à la fin
     }, [key, storedUsername]);
 
-    const renderItem = (item) => (
-        <Text style={styles.cardValue}> {item.total_products} </Text>
-    );
-    const renderItem2 = (item) => (
-        <Text style={styles.cardValue}> {item.total_products} </Text>
-    );
-    const renderItem3 = (item) => (
-        <Text style={styles.cardValue}> {item.total_products} </Text>
-    );
+    const renderItem = (item) => <Text style={styles.cardValue}>{item.total_products}</Text>;
+    const renderItem2 = (item) => <Text style={styles.cardValue}>{item.total_products}</Text>;
+    const renderItem3 = (item) => <Text style={styles.cardValue}>{item.total_products}</Text>;
 
     return (
         <SafeAreaView style={styles.container}>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     },
     header: {
         height: 180,
-        backgroundColor: "#4A90E2",
+        backgroundColor: '#4A90E2',
         borderBottomRightRadius: 50,
         borderBottomLeftRadius: 50,
         alignItems: 'center',
@@ -167,8 +167,8 @@ const styles = StyleSheet.create({
         height: 50,
     },
     welcomeText: {
-        color: "white",
-        fontSize: 22,
+        color: 'white',
+        fontSize: 18,
         marginTop: 10,
         fontWeight: 'bold',
     },
@@ -192,10 +192,9 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     card: {
-        backgroundColor: "white",
+        backgroundColor: 'white',
         flex: 1,
-        height: 150,
-        borderRadius: 15,
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
         marginHorizontal: 10,
@@ -204,19 +203,20 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
-        shadowRadius: 8,
+        shadowRadius: 2,
         elevation: 5,
+        height: 'auto',
     },
     cardTitle: {
-        fontSize: 16,
-        color: "#333",
+        fontSize: 12,
+        color: '#333',
         marginTop: 10,
         marginBottom: 5,
         fontWeight: '600',
     },
     cardValue: {
-        fontSize: 18,
-        color: "#4A90E2",
+        fontSize: 14,
+        color: '#4A90E2',
         fontWeight: '700',
     },
     button: {
@@ -226,9 +226,9 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     buttonTitle: {
-        fontSize: 16,
+        fontSize: 12,
         fontWeight: '600',
-    }
+    },
 });
 
 export default Home;
